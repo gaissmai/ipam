@@ -65,7 +65,7 @@ const (
 
 	scoping = `^ --- -* $`
 
-	// a label is field of a FQDN
+	// label is a field of a FQDN
 	label = `(?: [- \w]+ )` // hyphen and word chars, the rest is done by the parser
 
 	// word
