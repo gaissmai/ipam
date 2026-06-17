@@ -3,11 +3,17 @@ on:
   push:
     branches: ["main", "devel"]
     paths:
+      - 'go.mod'
       - '**.go'
       - '**.yml'
       - '**.yaml'
   pull_request:
     branches: ["main", "devel"]
+    paths:
+      - 'go.mod'
+      - '**.go'
+      - '**.yml'
+      - '**.yaml'
 
 permissions:
   contents: read
@@ -21,7 +27,8 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-go@v6
         with:
-          go-version: stable
+          persist-credentials: false
+          go-version-file: go.mod
           cache: true
       - run: go test -v ./...
 
@@ -31,7 +38,8 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-go@v6
         with:
-          go-version: stable
+          persist-credentials: false
+          go-version-file: go.mod
           cache: true
 
       - name: golangci-lint

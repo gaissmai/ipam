@@ -1,4 +1,4 @@
-// package grammar defines patterns and rules for IPAM domain specific language.
+// Package grammar defines patterns and rules for IPAM domain specific language.
 package grammar
 
 import (
