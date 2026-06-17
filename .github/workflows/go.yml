@@ -1,0 +1,40 @@
+name: CI
+on:
+  push:
+    branches: ["main", "devel"]
+    paths:
+      - '**.go'
+      - '**.yml'
+      - '**.yaml'
+  pull_request:
+    branches: ["main", "devel"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache: true
+      - run: go test -v ./...
+
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache: true
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.12.0
