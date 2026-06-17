@@ -2,47 +2,50 @@ name: CI
 on:
   push:
     branches: ["main", "devel"]
-    paths:
+    paths: &paths
       - 'go.mod'
       - '**.go'
       - '**.yml'
       - '**.yaml'
   pull_request:
     branches: ["main", "devel"]
-    paths:
-      - 'go.mod'
-      - '**.go'
-      - '**.yml'
-      - '**.yaml'
+    paths: *paths
 
+# Best Practice: Restrict global permissions to minimum required (Read-Only)
 permissions:
   contents: read
 
 jobs:
   test:
-    strategy:
-      fail-fast: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          # Disable credential persisting for enhanced security
+          persist-credentials: false
+
       - uses: actions/setup-go@v6
         with:
-          persist-credentials: false
           go-version-file: go.mod
-          cache: true
-      - run: go test -v ./...
+          cache: true   # Enable build caching for faster test execution
+
+      - name: Run Tests
+        run: go test -v ./...
 
   linting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-go@v6
         with:
           persist-credentials: false
+
+      - uses: actions/setup-go@v6
+        with:
           go-version-file: go.mod
-          cache: true
+          cache: false   # golangci-lint-action handles its own caching
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
-          version: v2.12.0
+          # Use 'latest' to prevent version mismatch with go.mod
+          version: latest
